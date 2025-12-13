@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import Dict, List
 from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
@@ -7,12 +7,13 @@ from vectordb import VectorDB
 from langchain_openai import ChatOpenAI
 from langchain_groq import ChatGroq
 from langchain_google_genai import ChatGoogleGenerativeAI
+from paths import DATA_DIR
 
 # Load environment variables
 load_dotenv()
 
 
-def load_documents() -> List[str]:
+def load_documents() -> List[Dict]:
     """
     Load documents for demonstration.
 
@@ -26,6 +27,17 @@ def load_documents() -> List[str]:
     # HINT: Your implementation depends on the type of documents you are using (.txt, .pdf, etc.)
 
     # Your implementation here
+    for file_name in os.listdir(DATA_DIR):
+        if file_name.endswith(".txt"):
+            # Read and return the file content
+            try:
+                file_path = os.path.join(DATA_DIR, file_name)
+                with open(file_path, "r", encoding="utf-8") as file:
+                    content = file.read()
+                    if content:
+                        results.append({'content': content, 'metadata': {'name': file_name, 'last_modified_timestamp': os.path.getmtime(file_path)}})
+            except IOError as e:
+                print(f"Error reading file: {e}")            
     return results
 
 
@@ -46,14 +58,41 @@ class RAGAssistant:
             )
 
         # Initialize vector database
-        self.vector_db = VectorDB()
+        self.vector_db = VectorDB()       
 
         # Create RAG prompt template
         # TODO: Implement your RAG prompt template
         # HINT: Use ChatPromptTemplate.from_template() with a template string
         # HINT: Your template should include placeholders for {context} and {question}
         # HINT: Design your prompt to effectively use retrieved context to answer questions
-        self.prompt_template = None  # Your implementation here
+        # Your implementation here
+
+        template_str = """
+        You are a knowledgeable assistant. Answer the user's question **ONLY** using
+        the information provided in the context below.
+
+        ### Rules:
+
+        - Use clear, concise language with bullet points where appropriate.
+        - Given the some documents that should be relevant to the user's question, answer the user's question.
+
+        ### Output Constraint
+
+        - Only answer questions based on the provided documents.
+        - If the user's question is not related to the documents, then you SHOULD NOT answer the question. Say "The question is not answerable given the documents".
+        - Never answer a question from your own knowledge.
+        - Provide answers in markdown format.
+        - Provide concise answers in bullet points when relevant.
+
+        ### Context:
+        {context}
+
+        ### Question:
+        {question}
+
+        """
+
+        self.prompt_template = ChatPromptTemplate.from_template(template_str)
 
         # Create the chain
         self.chain = self.prompt_template | self.llm | StrOutputParser()
@@ -115,6 +154,7 @@ class RAGAssistant:
             Dictionary containing the answer and retrieved context
         """
         llm_answer = ""
+
         # TODO: Implement the RAG query pipeline
         # HINT: Use self.vector_db.search() to retrieve relevant context chunks
         # HINT: Combine the retrieved document chunks into a single context string
@@ -122,6 +162,20 @@ class RAGAssistant:
         # HINT: Return a string answer from the LLM
 
         # Your implementation here
+        results = self.vector_db.search(input, n_results)
+        # documents, metadatas, distances = results["documents"], results["metadatas"], results["distances"]
+        relevant_documents = results["documents"]
+
+        # Print the relevant documents
+        print("-" * 100)
+        print("Relevant documents: \n")
+        for doc in relevant_documents:
+            print(doc)
+            print("-" * 100)
+        print("")     
+
+        context = "\n\n---\n\n".join(relevant_documents)
+        llm_answer = self.chain.invoke({"context": context, "question": input})               
         return llm_answer
 
 
@@ -137,7 +191,7 @@ def main():
         sample_docs = load_documents()
         print(f"Loaded {len(sample_docs)} sample documents")
 
-        assistant.add_documents(sample_docs)
+        # assistant.add_documents(sample_docs)
 
         done = False
 
@@ -146,7 +200,7 @@ def main():
             if question.lower() == "quit":
                 done = True
             else:
-                result = assistant.query(question)
+                result = assistant.invoke(question)
                 print(result)
 
     except Exception as e:
@@ -158,4 +212,7 @@ def main():
 
 
 if __name__ == "__main__":
+    if not os.path.exists(DATA_DIR):
+        raise FileNotFoundError(f"Data directory not found: {DATA_DIR}")
+    
     main()

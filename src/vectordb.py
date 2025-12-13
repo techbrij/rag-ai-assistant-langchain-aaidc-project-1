@@ -1,6 +1,8 @@
 import os
+import time
 import chromadb
 from typing import List, Dict, Any
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 
 
@@ -69,8 +71,12 @@ class VectorDB:
         # Feel free to try different approaches and see what works best!
 
         chunks = []
-        # Your implementation here
-
+        if text:
+            text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=int(chunk_size * 0.10),  # 10% Overlapping
+            )
+            chunks = text_splitter.split_text(text)
         return chunks
 
     def add_documents(self, documents: List) -> None:
@@ -90,7 +96,33 @@ class VectorDB:
         # HINT: Print progress messages to inform the user
 
         print(f"Processing {len(documents)} documents...")
+        processing_timestamp = int(time.time())
         # Your implementation here
+        for doc_index, doc in enumerate(documents):
+            content = doc.get('content')
+            metadata = doc.get('metadata')
+
+            if content:
+                chunks = self.chunk_text(content)
+                embeddings = self.embedding_model.encode(chunks)
+                
+                print(f"Processing {doc_index+1}. {metadata.get('name','')} total chunks: {len(chunks)}")
+
+                ids = []
+                metadatas = []
+                for index, chunk in enumerate(chunks):
+                    id = f"{processing_timestamp}_doc_{doc_index}_chunk_{index}"    
+                    meta = metadata | {'id': id, 'chunk_size' : len(chunk)}         
+                    ids.append(id)
+                    metadatas.append(meta)     
+                
+                self.collection.add(
+                    embeddings=embeddings,
+                    ids=ids,
+                    documents=chunks,
+                    metadatas=metadatas
+                )    
+
         print("Documents added to vector database")
 
     def search(self, query: str, n_results: int = 5) -> Dict[str, Any]:
@@ -112,9 +144,24 @@ class VectorDB:
         # HINT: Handle the case where results might be empty
 
         # Your implementation here
-        return {
-            "documents": [],
-            "metadatas": [],
-            "distances": [],
-            "ids": [],
+        print("Embedding query...")
+        embedded_query = self.embedding_model.encode([query])[0]
+
+        # Query the collection
+        results = self.collection.query(
+            query_embeddings=[embedded_query],
+            n_results=n_results,
+            include=["documents", "distances", "metadatas"],
+        )
+
+        relevant_results = {
+            "ids": results.get("ids", [[]])[0],
+            "documents": results.get("documents", [[]])[0],
+            "metadatas": results.get("metadatas", [[]])[0],
+            "distances": results.get("distances", [[]])[0],
         }
+
+        return relevant_results
+
+
+ 

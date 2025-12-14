@@ -45,8 +45,8 @@ Before starting, make sure you have:
 
    - Clone the repository
    ```bash
-   git clone [repo-url]
-   cd [repo folder]
+   git clone https://github.com/techbrij/rag-aaidc-project1
+   cd rag-aaidc-project1
    ```
    - Create Virtual Environment
    ```
@@ -84,7 +84,7 @@ Before starting, make sure you have:
    # OR
    GOOGLE_API_KEY=your_key_here
    ```
-
+   Add any API key and comment the other API key parameters to avoid the conflicts. At a time, only one key should be active.
 
 
 3. **Run the application:**

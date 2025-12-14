@@ -1,9 +1,12 @@
 import os
+import shutil
 import time
 import chromadb
 from typing import List, Dict, Any
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
+
+from paths import VECTOR_DB_DIR
 
 
 class VectorDB:
@@ -26,8 +29,15 @@ class VectorDB:
             "EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2"
         )
 
+        # Delete Database Directory(if exists) as we are always ingesting the documents
+        db_dir = VECTOR_DB_DIR
+        if os.path.exists(db_dir):
+            shutil.rmtree(db_dir)
+
+        os.makedirs(db_dir, exist_ok=True)
+
         # Initialize ChromaDB client
-        self.client = chromadb.PersistentClient(path="./chroma_db")
+        self.client = chromadb.PersistentClient(path=db_dir)
 
         # Load embedding model
         print(f"Loading embedding model: {self.embedding_model_name}")

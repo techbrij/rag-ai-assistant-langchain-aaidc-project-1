@@ -191,7 +191,7 @@ def main():
         sample_docs = load_documents()
         print(f"Loaded {len(sample_docs)} sample documents")
 
-        # assistant.add_documents(sample_docs)
+        assistant.add_documents(sample_docs)
 
         done = False
 
@@ -201,7 +201,7 @@ def main():
                 done = True
             else:
                 result = assistant.invoke(question)
-                print(result)
+                print("Response:\n\n" + result + "\n" + ("-" * 100) )
 
     except Exception as e:
         print(f"Error running RAG assistant: {e}")

@@ -151,13 +151,13 @@ class RAGAssistant:
         # documents, metadatas, distances = results["documents"], results["metadatas"], results["distances"]
         relevant_documents = results["documents"]
 
-        # Print the relevant documents
-        print("-" * 100)
-        print("Relevant documents: \n")
-        for doc in relevant_documents:
-            print(doc)
-            print("-" * 100)
-        print("")     
+        # Print the relevant documents (Uncomment following to debug relevant docs)
+        # print("-" * 100)
+        # print("Relevant documents: \n")
+        # for doc in relevant_documents:
+        #     print(doc)
+        #     print("-" * 100)
+        # print("")     
 
         # Build the context and generate the response
         context = "\n\n---\n\n".join(relevant_documents)

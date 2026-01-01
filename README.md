@@ -64,7 +64,7 @@ Before starting, make sure you have:
 - Embedding Model: sentence-transformers/all-MiniLM-L6-v2
 - LLM: gemini-2.5-flash (I used but can be used anyone as mentioned earlier)
 
-### Quick Setup
+### Setup & Installation
 
 1. **Clone and install dependencies:**
 
@@ -240,4 +240,4 @@ See the [LICENSE] file for details
 
 ## Contact
 Brij Mohan
-- GitHub: https://github.com/techbrij/rag-ai-assistant-langchain-aaidc-project-1
+- GitHub: https://github.com/techbrij

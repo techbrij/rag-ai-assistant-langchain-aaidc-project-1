@@ -129,6 +129,11 @@ Try these example questions:
 - "Explain [concept from your documents]"
 - "How does [process from your documents] work?"
 
+### Output Screenshot
+
+![RAG AI assistant](https://github.com/techbrij/rag-aaidc-project1/blob/main/images/rt-rag-assistant.png?raw=true)
+
+
 ## Testing
 The project uses pytest for performance testing. Tests can be run using the following command:
 

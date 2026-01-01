@@ -19,7 +19,11 @@ The project has 7 main steps:
 7. **RAG Query Pipeline** - Complete query-response pipeline using retrieved context
 
 ---
+## 📁 Project Structure
 
+![Project Structure](https://github.com/techbrij/rag-aaidc-project1/blob/main/images/rt-rag-project-structure.png?raw=true)
+
+---
 ## 🚀 Setup Instructions
 
 ### Prerequisites
@@ -190,21 +194,7 @@ Each file should contain text content you want your RAG system to search through
 - Return structured results
 
 ---
-## 📁 Project Structure
 
-```
-rt-aaidc-project1-template/
-├── src/
-│   ├── app.py           # Main RAG application (implement Steps 2, 6-7)
-│   └── vectordb.py      # Vector database wrapper (implement Steps 3-5)
-├── data/               # Replace with your documents (Step 1)
-│   ├── *.txt          # Your text files here
-├── requirements.txt    # All dependencies included
-├── .env.example       # Environment template
-└── README.md          # This guide
-```
-
----
 
 ## 📄 License
 This project is licensed under the MIT License.

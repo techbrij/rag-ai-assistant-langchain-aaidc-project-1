@@ -6,11 +6,13 @@ This is a **RAG (Retrieval-Augmented Generation) AI assistant** that enables int
 
 **Think of it as:** ChatGPT that knows about YOUR documents and can answer questions about them.
 
-## 📝 Implementation Steps
+This project implements a Retrieval-Augmented Generation (RAG) Assistant that combines a vector database (ChromaDB) with multiple Large Language Models (LLMs), supports OpenAI GPT, Groq LLaMA, and Google Gemini. The system enables users to ask questions over their own local text documents and receive accurate, context-aware responses.
+
+## 📝 Project Features & Steps
 
 The project has 7 main steps:
 
-1. **Prepare Your Documents** - Add your own documents to the data directory
+1. **Prepare Your Documents** - Add your own documents to the data directory in text format
 2. **Document Loading** - loads `.txt` files from data directory
 3. **Text Chunking** - Split documents into smaller, searchable chunks
 4. **Document Ingestion** - Process, embedding the chunks and store the information in the vector database  
@@ -19,6 +21,25 @@ The project has 7 main steps:
 7. **RAG Query Pipeline** - Complete query-response pipeline using retrieved context
 
 ---
+
+## Target Audience
+
+AI/ML Practitioners, Engineering team and anyone who want to implement or use RAG based AI Assistant.
+
+
+## Technical Stack 
+
+| Component                                    | Purpose                |
+| -------------------------------------------- | ---------------------- |
+| **Python 3.10+**                              | Core language          |
+| **LangChain**                                | RAG orchestration      |
+| **ChromaDB**                                 | Vector store           |
+| **SentenceTransformers (all-MiniLM-L6-v2)**  | Embedding & Generation |
+| **LangChain RecursiveCharacterTextSplitter** | Chunking documents     |
+| **OpenAI GPT, Groq Llama, Google Gemini**    | Multi-model support    |
+| **Text files**                               | Document source        |
+
+
 ## 📁 Project Structure
 
 ![Project Structure](https://github.com/techbrij/rag-aaidc-project1/blob/main/images/rt-rag-project-structure.png?raw=true)
@@ -30,7 +51,7 @@ The project has 7 main steps:
 
 Before starting, make sure you have:
 
-- Python 3.8 or higher installed
+- Python 3.11 or higher installed
 - An API key from **one** of these providers:
   - [OpenAI](https://platform.openai.com/api-keys) (most popular)
   - [Groq](https://console.groq.com/keys) (free tier available)
@@ -71,7 +92,7 @@ Before starting, make sure you have:
    pip install -r requirements.txt
    ```
 
-2. **Configure your API key:**
+2. **Configure Environment Variables:**
 
    ```bash
    # Create environment file (choose the method that works on your system)
@@ -107,6 +128,13 @@ Try these example questions:
 - "What is [topic from your documents]?"
 - "Explain [concept from your documents]"
 - "How does [process from your documents] work?"
+
+## Testing
+The project uses pytest for performance testing. Tests can be run using the following command:
+
+```bash
+pytest tests/test_performance.py -s
+```
 
 ## Implementation
 ### Step 1: Prepare Your Documents
@@ -194,12 +222,17 @@ Each file should contain text content you want your RAG system to search through
 - Return structured results
 
 ---
+## Contributing
+If you want to contribute to improve the framework, please refer to the guidelines below for how you can contribute:
 
+- Fork the repository.
+- Create a new branch for your changes.
+- Submit a pull request with a detailed description of your modifications.
 
-## 📄 License
-This project is licensed under the MIT License.
+## License
+This project is licensed under the MIT License. 
 See the [LICENSE] file for details
 
-## 👤 Author
+## Contact
 Brij Mohan
 - GitHub: https://github.com/techbrij/rag-ai-assistant-langchain-aaidc-project-1
